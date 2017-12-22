@@ -3,9 +3,7 @@ package ca.ubc.cs.cpsc210.translink.model;
 import ca.ubc.cs.cpsc210.translink.model.exception.RouteException;
 import ca.ubc.cs.cpsc210.translink.util.LatLon;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Represents a bus stop with an number, name, location (lat/lon)
@@ -15,7 +13,13 @@ import java.util.Set;
 // TODO: Task 2: Complete all the methods of this class
 
 public class Stop implements Iterable<Arrival> {
+    private int stopNumber;
+    private String stopName;
+    private LatLon stopLocation;
+    private Set<Route> routes;
+    private List<Bus> buses;
     private List<Arrival> arrivals;
+
 
     /**
      * Constructs a stop with given number, name and location.
@@ -26,6 +30,12 @@ public class Stop implements Iterable<Arrival> {
      * @param locn      location of this stop
      */
     public Stop(int number, String name, LatLon locn) {
+        stopNumber = number;
+        stopName = name;
+        stopLocation = locn;
+        routes = new HashSet<>();
+        buses = new ArrayList<>();
+        arrivals = new ArrayList<>();
     }
 
     /**
@@ -33,7 +43,7 @@ public class Stop implements Iterable<Arrival> {
      * @return      the name
      */
     public String getName() {
-        return null;
+        return stopName;
     }
 
     /**
@@ -41,7 +51,7 @@ public class Stop implements Iterable<Arrival> {
      * @return      the location
      */
     public LatLon getLocn() {
-        return null;
+        return stopLocation;
     }
 
     /**
@@ -49,7 +59,7 @@ public class Stop implements Iterable<Arrival> {
      * @return      the number
      */
     public int getNumber() {
-        return 0;
+        return stopNumber;
     }
 
     /**
@@ -57,7 +67,7 @@ public class Stop implements Iterable<Arrival> {
      * @return      an unmodifiable set of routes using this stop
      */
     public Set<Route> getRoutes() {
-        return null;
+        return routes;
     }
 
     /**
@@ -66,7 +76,10 @@ public class Stop implements Iterable<Arrival> {
      * @param route  the route to add
      */
     public void addRoute(Route route) {
-
+        if(!routes.contains(route)){
+            routes.add(route);
+            route.addStop(this);
+        }
     }
 
     /**
@@ -75,7 +88,10 @@ public class Stop implements Iterable<Arrival> {
      * @param route the route to remove
      */
     public void removeRoute(Route route) {
-
+        if(routes.contains(route)){
+            routes.remove(route);
+            route.removeStop(this);
+        }
     }
 
     /**
@@ -84,7 +100,7 @@ public class Stop implements Iterable<Arrival> {
      * @return  true if this stop is on given route
      */
     public boolean onRoute(Route route) {
-        return false;
+        return route.hasStop(this);
     }
 
     /**
@@ -94,14 +110,26 @@ public class Stop implements Iterable<Arrival> {
      * @param arrival  the bus arrival to add to stop
      */
     public void addArrival(Arrival arrival) {
+        if(arrivals.isEmpty())
+            arrivals.add(arrival);
+        else{
+            for(int i = 0; i < arrivals.size(); i++){
+                Arrival a = arrivals.get(i);
+                if(a.compareTo(arrival) > 0){
+                    arrivals.add(i, arrival);
+                    return;
+                }
 
+            }
+            arrivals.add(arrival);
+        }
     }
 
     /**
      * Remove all arrivals from this stop
      */
     public void clearArrivals() {
-
+        arrivals.clear();
     }
 
     /**
@@ -110,7 +138,11 @@ public class Stop implements Iterable<Arrival> {
      * @throws RouteException if bus is not on a route on which this stop lies
      */
     public void addBus(Bus bus) throws RouteException {
-
+        Route busRoute = bus.getRoute();
+        if(!busRoute.hasStop(this))
+            throw new RouteException("Bus is not on a route on which this stop lies");
+        else
+            buses.add(bus);
     }
 
     /**
@@ -118,14 +150,14 @@ public class Stop implements Iterable<Arrival> {
      * @return  unmodifiable list of buses
      */
     public List<Bus> getBuses() {
-        return null;
+        return buses;
     }
 
     /**
      * Clear all buses from this stop
      */
     public void clearBuses() {
-
+        buses.clear();
     }
 
     /**
@@ -133,7 +165,16 @@ public class Stop implements Iterable<Arrival> {
      */
     @Override
     public boolean equals(Object o) {
-        return false;
+        if(o == this)
+            return true;
+        if (o == null)
+            return false;
+        if (!(o instanceof Stop))
+            return false;
+        else{
+            Stop stop = (Stop) o;
+            return stop.getNumber() == stopNumber;
+        }
     }
 
     /**
@@ -142,7 +183,7 @@ public class Stop implements Iterable<Arrival> {
      */
     @Override
     public int hashCode() {
-        return 1;
+        return stopNumber;
     }
 
     @Override
@@ -157,7 +198,7 @@ public class Stop implements Iterable<Arrival> {
      * @param name      the new name
      */
     public void setName(String name) {
-
+        stopName = name;
     }
 
     /**
@@ -165,6 +206,6 @@ public class Stop implements Iterable<Arrival> {
      * @param locn      the new location
      */
     public void setLocn(LatLon locn) {
-
+        stopLocation = locn;
     }
 }

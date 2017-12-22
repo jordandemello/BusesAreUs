@@ -129,7 +129,6 @@ public class Route implements Iterable<Stop> {
 
     @Override
     public Iterator<Stop> iterator() {
-        // Do not modify the implementation of this method!
         return stops.iterator();
     }
 

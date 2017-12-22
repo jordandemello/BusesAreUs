@@ -4,6 +4,10 @@ import ca.ubc.cs.cpsc210.translink.util.LatLon;
 
 // Represents a bus having a destination, time and location that serves a particular route
 public class Bus {
+    private String destination;
+    private String time;
+    private LatLon location;
+    private Route route;
 
     /**
      * Constructor
@@ -14,7 +18,10 @@ public class Bus {
      * @param time   time at which location was recorded
      */
     public Bus(Route route, double lat, double lon, String dest, String time) {
-
+        destination = dest;
+        this.time = time;
+        location = new LatLon(lat,lon);
+        this.route = route;
     }
 
     /**
@@ -22,7 +29,7 @@ public class Bus {
      * @return bus route
      */
     public Route getRoute() {
-        return null;
+        return route;
     }
 
     /**
@@ -30,7 +37,7 @@ public class Bus {
      * @return bus location
      */
     public LatLon getLatLon() {
-        return null;
+        return location;
     }
 
     /**
@@ -38,7 +45,7 @@ public class Bus {
      * @return destination of this bus
      */
     public String getDestination() {
-        return null;
+        return destination;
     }
 
     /**
@@ -46,7 +53,7 @@ public class Bus {
      * @return  time location was recorded
      */
     public String getTime() {
-        return null;
+        return time;
     }
 
 }

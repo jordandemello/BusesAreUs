@@ -188,7 +188,6 @@ public class Stop implements Iterable<Arrival> {
 
     @Override
     public Iterator<Arrival> iterator() {
-        // Do not modify the implementation of this method!
         return arrivals.iterator();
     }
 
